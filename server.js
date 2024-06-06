@@ -9,14 +9,23 @@ const app = express();
 main().catch((err) => console.log(err));
 
 async function main() {
-	await mongoose.connect(process.env.DB_URI);
+    await mongoose
+        .connect(process.env.DB_URI)
+        .then(() => {
+            console.log("Connected to MongoDB");
+        })
+        .catch((err) => {
+            console.error("MongoDB connection error:", err);
+        });
 }
 
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use("/api/v1", routes);
 
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => {
-	console.log(`Server running on port ${port}`);
+    console.log(`Server running on port ${port}`);
 });
